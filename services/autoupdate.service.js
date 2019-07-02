@@ -1,14 +1,14 @@
 var Minio = require("minio");
 
-var minioClient = new Minio.Client({
+const minioClient = new Minio.Client({
   endPoint: "localhost",
   port: 9000,
   useSSL: false,
-  accessKey: "test1234",
-  secretKey: "verysecretkey1234"
+  accessKey: "admin",
+  secretKey: "password"
 });
 
-exports.projectExists = async function(projectId) {
+exports.projectExists = async function (projectId) {
   try {
     const exists = await minioClient.bucketExists(projectId);
     return exists;
@@ -17,7 +17,7 @@ exports.projectExists = async function(projectId) {
   }
 };
 
-exports.getMetaData = async function(projectId, updatePacketId) {
+exports.getMetaData = async function (projectId, updatePacketId) {
   try {
     return await minioClient
       .getObject(projectId, updatePacketId + "/meta.json")
@@ -37,7 +37,7 @@ exports.getMetaData = async function(projectId, updatePacketId) {
   }
 };
 
-exports.getM3UpdateList = async function(projectId, updatePacketId) {
+exports.getM3UpdateList = async function (projectId, updatePacketId) {
   var updateList = [];
   try {
     return new Promise((resolve, reject) => {
@@ -61,13 +61,13 @@ exports.getM3UpdateList = async function(projectId, updatePacketId) {
             if (meta.type === "M3_UPDATE_PACKET") {
               updateList.push(
                 meta.serialNumber +
-                  ";" +
-                  "/autoupdate/v1/" +
-                  projectId +
-                  "/" +
-                  updatePacketId +
-                  "/" +
-                  meta.updatePacketFile
+                ";" +
+                "/autoupdate/v1/" +
+                projectId +
+                "/" +
+                updatePacketId +
+                "/" +
+                meta.updatePacketFile
               );
             }
           }
@@ -114,13 +114,13 @@ async function createUpdateList(stream, projectId, prefix) {
         if (meta.type === "M3_UPDATE_PACKET") {
           updateList.push(
             meta.serialNumber +
-              ";" +
-              "/autoupdate/v1/" +
-              projectId +
-              "/" +
-              prefix +
-              "/" +
-              meta.updatePacketFile
+            ";" +
+            "/autoupdate/v1/" +
+            projectId +
+            "/" +
+            prefix +
+            "/" +
+            meta.updatePacketFile
           );
         }
       }
